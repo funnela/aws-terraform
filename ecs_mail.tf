@@ -1,15 +1,15 @@
-resource "aws_ecs_task_definition" "funnela_web" {
-  family                   = "funnela-web-${var.account}"
+resource "aws_ecs_task_definition" "funnela_mail" {
+  family                   = "funnela-mail-${var.account}"
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
-  cpu                      = var.web_service_cpu
-  memory                   = var.web_service_mem
+  cpu                      = var.mail_service_cpu
+  memory                   = var.mail_service_mem
   execution_role_arn       = aws_iam_role.task_execution_role.arn
   container_definitions    = <<TASK_DEFINITION
 [
   {
-    "name": "web",
-    "image": "${var.docker_image_web}:${var.docker_image_version}",
+    "name": "mail-daemon",
+    "image": "${var.docker_image_mail_daemon}:${var.docker_image_version}",
     "essential": true,
     "portMappings": [
       {
@@ -20,9 +20,9 @@ resource "aws_ecs_task_definition" "funnela_web" {
     "logConfiguration": {
       "logDriver": "awslogs",
       "options": {
-        "awslogs-group": "${aws_ecs_cluster.ecs_cluster.name}/funnela-${var.account}-web",
+        "awslogs-group": "${aws_ecs_cluster.ecs_cluster.name}/funnela-${var.account}-mail",
         "awslogs-region": "${data.aws_region.current.name}",
-        "awslogs-stream-prefix": "funnela-web",
+        "awslogs-stream-prefix": "funnela-mail",
         "awslogs-create-group": "true"
       }
     },
@@ -45,27 +45,21 @@ TASK_DEFINITION
 }
 
 
-resource "aws_ecs_service" "funnela-web" {
-  name            = "funnela-web-${var.account}"
+resource "aws_ecs_service" "funnela-mail" {
+  name            = "funnela-mail-${var.account}"
   cluster         = aws_ecs_cluster.ecs_cluster.id
-  task_definition = aws_ecs_task_definition.funnela_web.arn
-  desired_count   = var.web_service_scale
+  task_definition = aws_ecs_task_definition.funnela_mail.arn
+  desired_count   = var.mail_support_enabled ? 1 : 0
   launch_type = "FARGATE"
   enable_ecs_managed_tags = true
   propagate_tags = "TASK_DEFINITION"
 
-  deployment_maximum_percent = 200
-  deployment_minimum_healthy_percent = 50
+  deployment_maximum_percent = 100
+  deployment_minimum_healthy_percent = 0
 
   deployment_circuit_breaker {
     enable = true
     rollback = true
-  }
-
-  load_balancer {
-    target_group_arn = aws_lb_target_group.funnela_web.arn
-    container_name   = "web"
-    container_port   = 80
   }
 
   network_configuration {

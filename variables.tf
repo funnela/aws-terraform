@@ -26,6 +26,14 @@ variable "web_service_mem" {
     default = 2048
 }
 
+variable "mail_service_cpu" {
+    default = 1024
+}
+
+variable "mail_service_mem" {
+    default = 2048
+}
+
 variable "azs" {
     default = ["eu-central-1a", "eu-central-1b", "eu-central-1c"]
 }
@@ -40,6 +48,14 @@ variable "docker_image_version" {
 
 variable "docker_image_web" {
     default = "wlatanowicz/funnela-web"
+}
+
+variable "docker_image_mail_daemon" {
+    default = "wlatanowicz/funnela-mail-daemon"
+}
+
+variable "mail_support_enabled" {
+    default = true
 }
 
 variable "db_instance_type" {
