@@ -47,11 +47,11 @@ variable "docker_image_version" {
 }
 
 variable "docker_image_web" {
-    default = "wlatanowicz/funnela-web"
+    default = "funnela/funnela-web"
 }
 
 variable "docker_image_mail_daemon" {
-    default = "wlatanowicz/funnela-mail-daemon"
+    default = "funnela/funnela-mail-daemon"
 }
 
 variable "mail_support_enabled" {
