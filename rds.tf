@@ -4,8 +4,8 @@ resource "aws_db_subnet_group" "default" {
 }
 
 resource "aws_db_parameter_group" "default" {
-  name   = "funnela-${var.account}-db-pg"
-  family = "postgres11"
+  name   = "funnela-${var.account}-db-pg14"
+  family = "postgres14"
 
   parameter {
     apply_method = "pending-reboot"
