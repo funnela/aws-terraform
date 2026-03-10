@@ -18,8 +18,11 @@ EOF
 }
 
 
-data "template_file" "bastion_parameter_store_policy_template" {
-  template = <<-EOT
+resource "aws_iam_policy" "bastion_parameter_store" {
+  name = "funnela_${var.account}_bastion_parameter_store"
+  path = "/"
+
+  policy = <<-EOT
 {
   "Version": "2012-10-17",
   "Statement": [
@@ -43,21 +46,17 @@ data "template_file" "bastion_parameter_store_policy_template" {
 EOT
 }
 
-resource "aws_iam_policy" "bastion_parameter_store" {
-  name = "funnela_${var.account}_bastion_parameter_store"
-  path = "/"
-
-  policy = data.template_file.bastion_parameter_store_policy_template.rendered
-}
-
 resource "aws_iam_role_policy_attachment" "bastion_parameter_store" {
   role      = aws_iam_role.bastion_ec2_role.name
   policy_arn = aws_iam_policy.bastion_parameter_store.arn
 }
 
 
-data "template_file" "bastion_ecs_policy_template" {
-  template = <<-EOT
+resource "aws_iam_policy" "bastion_ecs" {
+  name = "funnela_${var.account}_bastion_ecs"
+  path = "/"
+
+  policy = <<-EOT
 {
   "Version": "2012-10-17",
   "Statement": [
@@ -76,13 +75,6 @@ data "template_file" "bastion_ecs_policy_template" {
   ]
 }
 EOT
-}
-
-resource "aws_iam_policy" "bastion_ecs" {
-  name = "funnela_${var.account}_bastion_ecs"
-  path = "/"
-
-  policy = data.template_file.bastion_ecs_policy_template.rendered
 }
 
 resource "aws_iam_role_policy_attachment" "bastion_ecs" {

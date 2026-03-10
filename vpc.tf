@@ -1,5 +1,5 @@
 module "vpc" {
-  source                 = "git::https://github.com/terraform-aws-modules/terraform-aws-vpc.git?ref=v5.1.1"
+  source                 = "git::https://github.com/terraform-aws-modules/terraform-aws-vpc.git?ref=v6.6.0"
   name                   = "funnela-${var.account}"
   cidr                   = "10.${var.subnet_number}.0.0/16"
   azs                    = var.azs

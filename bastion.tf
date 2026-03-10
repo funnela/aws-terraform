@@ -12,19 +12,6 @@ data "aws_ami" "amazon-linux-2" {
   }
 }
 
-data "template_file" "bastion_user_data" {
-  template = file("${path.module}/bastion_user_data.sh")
-  vars = {
-    authorized_keys = var.bastion_authorized_keys
-    aws_region = data.aws_region.current.name
-    ssm_parameter_postgres_password = aws_ssm_parameter.db_password.name
-    db_host = aws_db_instance.database.address
-    db_user = aws_db_instance.database.username
-    ecs_cluster = aws_ecs_cluster.ecs_cluster.name
-    ecs_service = aws_ecs_service.funnela-web.name
-  }
-}
-
 
 resource "aws_iam_instance_profile" "bastion_profile" {
   name = "funnela-bastion-sync-${var.account}_profile"
@@ -39,7 +26,18 @@ resource "aws_instance" "bastion" {
   instance_type = "t4g.small"
   subnet_id = data.aws_subnet.first_az_public_subnet.id
   associate_public_ip_address = true
-  user_data = data.template_file.bastion_user_data.rendered
+  user_data = templatefile(
+    "${path.module}/bastion_user_data.sh",
+    {
+      authorized_keys = var.bastion_authorized_keys
+      aws_region = data.aws_region.current.name
+      ssm_parameter_postgres_password = aws_ssm_parameter.db_password.name
+      db_host = aws_db_instance.database.address
+      db_user = aws_db_instance.database.username
+      ecs_cluster = aws_ecs_cluster.ecs_cluster.name
+      ecs_service = aws_ecs_service.funnela-web.name
+    }
+  )
   user_data_replace_on_change = true
   iam_instance_profile = aws_iam_instance_profile.bastion_profile.name
 

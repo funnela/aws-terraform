@@ -18,8 +18,12 @@ resource "aws_iam_role" "task_execution_role" {
 EOF
 }
 
-data "template_file" "parameter_store_policy_template" {
-  template = <<-EOT
+
+resource "aws_iam_policy" "parameter_store" {
+  name = "funnela_${var.account}_parameter_store"
+  path = "/"
+
+  policy = <<-EOT
 {
   "Version": "2012-10-17",
   "Statement": [
@@ -42,13 +46,6 @@ data "template_file" "parameter_store_policy_template" {
 EOT
 }
 
-resource "aws_iam_policy" "parameter_store" {
-  name = "funnela_${var.account}_parameter_store"
-  path = "/"
-
-  policy = data.template_file.parameter_store_policy_template.rendered
-}
-
 resource "aws_iam_role_policy_attachment" "parameter_store" {
   role      = aws_iam_role.task_execution_role.name
   policy_arn = aws_iam_policy.parameter_store.arn
@@ -56,8 +53,11 @@ resource "aws_iam_role_policy_attachment" "parameter_store" {
 
 
 
-data "template_file" "cloud_watch_policy" {
-  template = <<-EOT
+resource "aws_iam_policy" "cloud_watch" {
+  name = "funnela_${var.account}_cloud_watch"
+  path = "/"
+
+  policy = <<-EOT
 {
   "Version": "2012-10-17",
   "Statement": [
@@ -73,13 +73,6 @@ data "template_file" "cloud_watch_policy" {
   ]
 }
 EOT
-}
-
-resource "aws_iam_policy" "cloud_watch" {
-  name = "funnela_${var.account}_cloud_watch"
-  path = "/"
-
-  policy = data.template_file.cloud_watch_policy.rendered
 }
 
 resource "aws_iam_role_policy_attachment" "cloud_watch" {
@@ -113,26 +106,13 @@ resource "aws_iam_role" "task_role" {
 EOF
 }
 
-data "template_file" "task_ses_policy_template" {
-  template = <<-EOT
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": [
-                "ses:*"
-            ],
-            "Resource": "*"
-        }
-    ]
-}
-EOT
-}
 
 
-data "template_file" "ecs_exec_policy_template" {
-  template = <<-EOT
+resource "aws_iam_policy" "ecs_exec_policy" {
+  name = "funnela_${var.account}_ecs_exec"
+  path = "/"
+
+  policy = <<-EOT
 {
     "Version": "2012-10-17",
     "Statement": [
@@ -149,13 +129,6 @@ data "template_file" "ecs_exec_policy_template" {
     ]
 }
 EOT
-}
-
-resource "aws_iam_policy" "ecs_exec_policy" {
-  name = "funnela_${var.account}_ecs_exec"
-  path = "/"
-
-  policy = data.template_file.ecs_exec_policy_template.rendered
 }
 
 resource "aws_iam_role_policy_attachment" "task_ecs_exec" {
