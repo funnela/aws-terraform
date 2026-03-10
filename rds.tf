@@ -4,7 +4,7 @@ resource "aws_db_subnet_group" "default" {
 }
 
 resource "aws_db_parameter_group" "default" {
-  name   = "funnela-${var.account}-db-pg14"
+  name   = "funnela-${var.account}-db-pg14-v1"
   family = "postgres14"
 
   parameter {
