@@ -21,7 +21,7 @@ resource "aws_ecs_task_definition" "funnela_web" {
       "logDriver": "awslogs",
       "options": {
         "awslogs-group": "${aws_ecs_cluster.ecs_cluster.name}/funnela-${var.account}-web",
-        "awslogs-region": "${data.aws_region.current.name}",
+        "awslogs-region": "${data.aws_region.current.id}",
         "awslogs-stream-prefix": "funnela-web",
         "awslogs-create-group": "true"
       }

@@ -21,7 +21,7 @@ resource "aws_ecs_task_definition" "funnela_mail" {
       "logDriver": "awslogs",
       "options": {
         "awslogs-group": "${aws_ecs_cluster.ecs_cluster.name}/funnela-${var.account}-mail",
-        "awslogs-region": "${data.aws_region.current.name}",
+        "awslogs-region": "${data.aws_region.current.id}",
         "awslogs-stream-prefix": "funnela-mail",
         "awslogs-create-group": "true"
       }

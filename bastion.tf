@@ -30,7 +30,7 @@ resource "aws_instance" "bastion" {
     "${path.module}/bastion_user_data.sh",
     {
       authorized_keys = var.bastion_authorized_keys
-      aws_region = data.aws_region.current.name
+      aws_region = data.aws_region.current.id
       ssm_parameter_postgres_password = aws_ssm_parameter.db_password.name
       db_host = aws_db_instance.database.address
       db_user = aws_db_instance.database.username
