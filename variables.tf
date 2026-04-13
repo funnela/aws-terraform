@@ -66,6 +66,10 @@ variable "redis_instance_type" {
     default = "cache.t4g.micro"
 }
 
+variable "db_version" {
+    default = "14.17"
+}
+
 variable "db_storage" {
     default = "10"
 }

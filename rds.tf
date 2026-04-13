@@ -21,7 +21,7 @@ resource "aws_db_instance" "database" {
   max_allocated_storage = var.db_max_storage
   storage_type         = "gp2"
   engine               = "postgres"
-  engine_version       = "14.17"
+  engine_version       = var.db_version
   instance_class       = var.db_instance_type
   username             = "postgres"
   password             = random_password.db_password.result
